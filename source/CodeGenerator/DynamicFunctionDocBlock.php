@@ -15,7 +15,7 @@ class DynamicFunctionDocBlock extends FunctionDocBlock {
         parent::__construct();
     }
 
-    public function _getParameters() {
+    public function _getParameters(): array {
         $parameters = parent::_getParameters();
         foreach ($this->_functionBlock->getParameters() as $parameterBlock) {
             $types = [];
@@ -30,7 +30,7 @@ class DynamicFunctionDocBlock extends FunctionDocBlock {
         return $parameters;
     }
 
-    protected function _getReturnType() {
+    protected function _getReturnType(): ?string {
         $returnType = parent::_getReturnType();
         if (null !== $returnType) {
             return $returnType;
@@ -38,4 +38,11 @@ class DynamicFunctionDocBlock extends FunctionDocBlock {
         return $this->_functionBlock->getReturnType();
     }
 
+    public function _getIsNullableReturnType(): ?bool {
+        $isNullableReturnType = parent::_getIsNullableReturnType();
+        if (null !== $isNullableReturnType) {
+            return $isNullableReturnType;
+        }
+        return $this->_functionBlock->getIsNullableReturnType();
+    }
 }

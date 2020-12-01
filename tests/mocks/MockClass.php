@@ -39,6 +39,12 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
     public function withReferenceParam(&$param) {
     }
 
+    public function withReturnType(): int {
+    }
+
+    public function withNullableReturnType(): ?array {
+    }
+
     protected function abstractMethod() {
     }
 

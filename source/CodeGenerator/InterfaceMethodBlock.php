@@ -2,13 +2,12 @@
 
 namespace CodeGenerator;
 
-class InterfaceMethodBlock extends FunctionBlock
-{
+class InterfaceMethodBlock extends FunctionBlock {
+
     /**
      * @param callable|null|string $name
      */
-    public function __construct($name)
-    {
+    public function __construct($name) {
         $this->setName($name);
         parent::__construct();
     }
@@ -16,16 +15,14 @@ class InterfaceMethodBlock extends FunctionBlock
     /**
      * @return string
      */
-    protected function _dumpHeader()
-    {
+    protected function _dumpHeader(): string {
         return 'public ' . parent::_dumpHeader();
     }
 
     /**
      * @return string
      */
-    protected function _dumpBody()
-    {
+    protected function _dumpBody(): string {
         return ';';
     }
 
@@ -33,8 +30,7 @@ class InterfaceMethodBlock extends FunctionBlock
      * @param \ReflectionMethod $reflection
      * @return InterfaceMethodBlock
      */
-    public static function buildFromReflection(\ReflectionMethod $reflection)
-    {
+    public static function buildFromReflection(\ReflectionMethod $reflection): InterfaceMethodBlock {
         $method = new self($reflection->getName());
         $method->extractFromReflection($reflection);
 
