@@ -187,10 +187,10 @@ class FunctionBlock extends Block {
      */
     public function setReturnTypeFromReflection(\ReflectionFunctionAbstract $reflection): void {
         $returnType = $reflection->getReturnType();
-        if (!$returnType) {
+        if (!$returnType || !is_a($returnType, \ReflectionNamedType::class)) {
             return;
         }
-        $this->_returnType = (string) $returnType;
+        $this->_returnType = $returnType->getName();
         $this->_isNullableReturnType = (boolean) $returnType->allowsNull();
     }
 
