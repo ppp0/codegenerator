@@ -13,4 +13,6 @@ interface MockInterface extends \CodeGeneratorMocks\MockInterfaceTwo {
     public function withReturnType(): string;
 
     public function withNullableReturnType(): ?int;
+
+    public function withReturnTypeVoid(): void;
 }

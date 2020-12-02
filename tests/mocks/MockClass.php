@@ -45,6 +45,9 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
     public function withNullableReturnType(): ?array {
     }
 
+    public function withReturnTypeVoid(): void {
+    }
+
     protected function abstractMethod() {
     }
 
