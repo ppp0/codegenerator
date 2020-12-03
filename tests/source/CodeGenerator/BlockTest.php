@@ -5,8 +5,9 @@ namespace TestsCodeGenerator;
 use CodeGenerator\Block;
 use CodeGenerator\FileBlock;
 use CodeGeneratorHelpers\TestHelper;
+use PHPUnit\Framework\TestCase;
 
-class CG_BlockTest extends \PHPUnit_Framework_TestCase {
+class CG_BlockTest extends TestCase {
 
     public function testOutdent() {
         $block = new FileBlock();

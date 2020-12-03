@@ -4,8 +4,9 @@ namespace TestsCodeGenerator;
 
 use CodeGenerator\ClassBlock;
 use CodeGenerator\FileBlock;
+use PHPUnit\Framework\TestCase;
 
-class CG_ClassTest extends \PHPUnit_Framework_TestCase {
+class CG_ClassTest extends TestCase {
 
     public function testDump() {
         $classes = array('CodeGeneratorMocks\\MockAbstractClass', 'CodeGeneratorMocks\\MockClass');
