@@ -5,8 +5,9 @@ namespace TestsCodeGenerator;
 use CodeGenerator\ConstantBlock;
 use CodeGenerator\FileBlock;
 use CodeGenerator\InterfaceBlock;
+use PHPUnit\Framework\TestCase;
 
-class CG_InterfaceTest extends \PHPUnit_Framework_TestCase {
+class CG_InterfaceTest extends TestCase {
 
     public function testDump() {
         $file = new FileBlock();

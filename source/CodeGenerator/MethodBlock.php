@@ -49,7 +49,7 @@ class MethodBlock extends FunctionBlock {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function extractFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function extractFromReflection(\ReflectionFunctionAbstract $reflection): void {
         parent::extractFromReflection($reflection);
         if ($reflection instanceof \ReflectionMethod) {
             $this->setVisibilityFromReflection($reflection);
@@ -87,7 +87,7 @@ class MethodBlock extends FunctionBlock {
         $this->setStatic($reflection->isStatic());
     }
 
-    protected function _dumpHeader() {
+    protected function _dumpHeader(): string {
         $code = '';
         if ($this->_abstract) {
             $code .= 'abstract ';
@@ -100,7 +100,7 @@ class MethodBlock extends FunctionBlock {
         return $code;
     }
 
-    protected function _dumpBody() {
+    protected function _dumpBody(): string {
         if ($this->_abstract) {
             return ';';
         }

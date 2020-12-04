@@ -18,8 +18,11 @@ class FunctionBlock extends Block {
     /** @var DocBlock|string|null */
     protected $_docBlock;
 
-    /** @var string */
+    /** @var string|null */
     protected $_returnType;
+
+    /** @var boolean|null */
+    protected $_isNullableReturnType;
 
     /**
      * @param callable|string|null $body
@@ -36,16 +39,16 @@ class FunctionBlock extends Block {
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
-    public function setName($name) {
-        $this->_name = (string) $name;
+    public function setName(?string $name): void {
+        $this->_name = $name;
     }
 
     /**
      * @return string|null
      */
-    public function getName() {
+    public function getName(): ?string {
         return $this->_name;
     }
 
@@ -53,7 +56,7 @@ class FunctionBlock extends Block {
      * @param ParameterBlock $parameter
      * @throws Exception
      */
-    public function addParameter(ParameterBlock $parameter) {
+    public function addParameter(ParameterBlock $parameter): void {
         if (array_key_exists($parameter->getName(), $this->_parameters)) {
             throw new Exception('Parameter `' . $parameter->getName() . '` is already set.');
         }
@@ -63,14 +66,14 @@ class FunctionBlock extends Block {
     /**
      * @return ParameterBlock[]
      */
-    public function getParameters() {
+    public function getParameters(): array {
         return $this->_parameters;
     }
 
     /**
-     * @param string $code
+     * @param string|null $code
      */
-    public function setCode($code) {
+    public function setCode(?string $code): void {
         if (null !== $code) {
             $code = $this->_outdent((string) $code, true);
         }
@@ -80,11 +83,11 @@ class FunctionBlock extends Block {
     /**
      * @param DocBlock|string|null $docBlock
      */
-    public function setDocBlock($docBlock) {
+    public function setDocBlock($docBlock): void {
         $this->_docBlock = $docBlock;
     }
 
-    public function useDynamicDocBlock() {
+    public function useDynamicDocBlock(): void {
         $this->setDocBlock(new DynamicFunctionDocBlock($this));
     }
 
@@ -96,23 +99,37 @@ class FunctionBlock extends Block {
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getReturnType() {
+    public function getReturnType(): ?string {
         return $this->_returnType;
     }
 
     /**
-     * @param string $returnType
+     * @param string|null $returnType
      */
-    public function setReturnType($returnType) {
+    public function setReturnType(?string $returnType): void {
         $this->_returnType = $returnType;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIsNullableReturnType(): ?bool {
+        return $this->_isNullableReturnType;
+    }
+
+    /**
+     * @param bool|null $isNullableReturnType
+     */
+    public function setIsNullableReturnType(?bool $isNullableReturnType): void {
+        $this->_isNullableReturnType = $isNullableReturnType;
     }
 
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setBodyFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function setBodyFromReflection(\ReflectionFunctionAbstract $reflection): void {
         /** @var $reflection \ReflectionMethod */
         if (is_a($reflection, '\\ReflectionMethod') && $reflection->isAbstract()) {
             $this->_code = null;
@@ -145,7 +162,7 @@ class FunctionBlock extends Block {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setParametersFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function setParametersFromReflection(\ReflectionFunctionAbstract $reflection): void {
         foreach ($reflection->getParameters() as $reflectionParameter) {
             $parameter = ParameterBlock::buildFromReflection($reflectionParameter);
             $this->addParameter($parameter);
@@ -155,7 +172,7 @@ class FunctionBlock extends Block {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function setDocBlockFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function setDocBlockFromReflection(\ReflectionFunctionAbstract $reflection): void {
         $docBlock = $reflection->getDocComment();
         if ($docBlock) {
             $docBlock = preg_replace('/([\n\r])(' . self::$_indentation . ')+/', '$1', $docBlock);
@@ -165,17 +182,29 @@ class FunctionBlock extends Block {
         }
     }
 
-    public function dump() {
+    /**
+     * @param \ReflectionFunctionAbstract $reflection
+     */
+    public function setReturnTypeFromReflection(\ReflectionFunctionAbstract $reflection): void {
+        $returnType = $reflection->getReturnType();
+        if (!$returnType || !($returnType instanceof \ReflectionNamedType)) {
+            return;
+        }
+        $this->_returnType = $returnType->getName();
+        $this->_isNullableReturnType = (boolean) $returnType->allowsNull();
+    }
+
+    public function dump(): string {
         return $this->_dumpLine(
             $this->_dumpDocBlock(),
-            $this->_dumpHeader() . $this->_dumpBody()
+            $this->_dumpHeader() . $this->_dumpReturnType() . $this->_dumpBody()
         );
     }
 
     /**
      * @return string|null
      */
-    protected function _dumpDocBlock() {
+    protected function _dumpDocBlock(): ?string {
         if (null === $this->_docBlock) {
             return null;
         }
@@ -185,7 +214,7 @@ class FunctionBlock extends Block {
     /**
      * @return string
      */
-    protected function _dumpHeader() {
+    protected function _dumpHeader(): string {
         $content = 'function';
         if ($this->_name) {
             $content .= ' ' . $this->_name;
@@ -199,7 +228,17 @@ class FunctionBlock extends Block {
     /**
      * @return string
      */
-    protected function _dumpBody() {
+    protected function _dumpReturnType(): string {
+        if (null === $this->_returnType) {
+            return '';
+        }
+        return ': ' . ($this->_isNullableReturnType ? '?' : '') . $this->_returnType;
+    }
+
+    /**
+     * @return string
+     */
+    protected function _dumpBody(): string {
         $code = $this->_code;
         if ($code) {
             $code = $this->_indent($code);
@@ -210,16 +249,17 @@ class FunctionBlock extends Block {
     /**
      * @param \ReflectionFunctionAbstract $reflection
      */
-    public function extractFromReflection(\ReflectionFunctionAbstract $reflection) {
+    public function extractFromReflection(\ReflectionFunctionAbstract $reflection): void {
         $this->setBodyFromReflection($reflection);
         $this->setParametersFromReflection($reflection);
         $this->setDocBlockFromReflection($reflection);
+        $this->setReturnTypeFromReflection($reflection);
     }
 
     /**
      * @param \Closure $closure
      */
-    public function extractFromClosure(\Closure $closure) {
+    public function extractFromClosure(\Closure $closure): void {
         $this->extractFromReflection(new \ReflectionFunction($closure));
     }
 }

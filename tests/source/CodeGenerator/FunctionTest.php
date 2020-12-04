@@ -3,8 +3,9 @@
 namespace TestsCodeGenerator;
 
 use CodeGenerator\FunctionBlock;
+use PHPUnit\Framework\TestCase;
 
-class CG_FunctionTest extends \PHPUnit_Framework_TestCase {
+class CG_FunctionTest extends TestCase {
 
     public function testExtractFromClosure() {
         $closure = function ($a, $b) {

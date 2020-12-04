@@ -3,8 +3,9 @@
 namespace TestsCodeGenerator;
 
 use CodeGenerator\ArrayBlock;
+use PHPUnit\Framework\TestCase;
 
-class CG_ArrayTest extends \PHPUnit_Framework_TestCase {
+class CG_ArrayTest extends TestCase {
 
     public function testDumpShort() {
         $value = array('foo', 'bar');
