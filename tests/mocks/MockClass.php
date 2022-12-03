@@ -20,7 +20,7 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
     /**
      * @return int
      */
-    public function count() {
+    public function count(): int {
         return count($this->foo);
     }
 
@@ -30,10 +30,10 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
     public function defaultValues($defaultValue = null, $defaultArray = array()) {
     }
 
-    public function defaultValueMandatoryArgument($defaultValue = true, $mandatoryArgument) {
+    public function defaultValueMandatoryArgument($mandatoryArgument, $defaultValue = true) {
     }
 
-    public function nullableMandatoryArgument($nullableValue = null, $mandatoryArgument) {
+    public function nullableMandatoryArgument($mandatoryArgument, $nullableValue = null) {
     }
 
     public function withReferenceParam(&$param) {
