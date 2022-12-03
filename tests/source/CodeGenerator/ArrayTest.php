@@ -10,14 +10,14 @@ class CG_ArrayTest extends TestCase {
     public function testDumpShort() {
         $value = array('foo', 'bar');
         $array = new ArrayBlock($value);
-        $this->assertNotRegExp("/\n/", $array->dump());
+        $this->assertDoesNotMatchRegularExpression("/\n/", $array->dump());
         $this->_assertSame($value, $array);
     }
 
     public function testDumpLong() {
         $value = array_fill(0, 100, 'foo');
         $array = new ArrayBlock($value);
-        $this->assertRegExp("/\n    /", $array->dump());
+        $this->assertMatchesRegularExpression("/\n    /", $array->dump());
         $this->assertCount(count($value) + 2, explode("\n", $array->dump()));
         $this->_assertSame($value, $array);
     }

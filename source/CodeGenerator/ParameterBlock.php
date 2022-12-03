@@ -112,16 +112,7 @@ class ParameterBlock extends Block {
      * @return ParameterBlock
      */
     public static function buildFromReflection(\ReflectionParameter $reflection) {
-        $type = null;
-        if ($reflection->isCallable()) {
-            $type = 'callable';
-        }
-        if ($reflection->isArray()) {
-            $type = 'array';
-        }
-        if ($reflection->getClass()) {
-            $type = $reflection->getClass()->getName();
-        }
+        $type = !is_null($reflection->getType()) ? $reflection->getType()->getName(): null;
         $defaultValue = null;
         if ($reflection->isDefaultValueAvailable()) {
             $defaultValue = $reflection->getDefaultValue();
