@@ -45,6 +45,10 @@ class MockClass extends \CodeGeneratorMocks\MockAbstractClass {
     public function withNullableReturnType(): ?array {
     }
 
+    public function withNullableMixedReturnType(): mixed {
+        return null;
+    }
+
     public function withReturnTypeVoid(): void {
     }
 

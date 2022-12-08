@@ -191,7 +191,7 @@ class FunctionBlock extends Block {
             return;
         }
         $this->_returnType = $returnType->getName();
-        $this->_isNullableReturnType = (boolean) $returnType->allowsNull();
+        $this->_isNullableReturnType = $returnType->allowsNull();
     }
 
     public function dump(): string {
@@ -232,7 +232,8 @@ class FunctionBlock extends Block {
         if (null === $this->_returnType) {
             return '';
         }
-        return ': ' . ($this->_isNullableReturnType ? '?' : '') . $this->_returnType;
+        $isNullableAndNotMixedType = $this->_returnType !== 'mixed' && $this->_isNullableReturnType;
+        return ': ' . ($isNullableAndNotMixedType ? '?' : '') . $this->_returnType;
     }
 
     /**
