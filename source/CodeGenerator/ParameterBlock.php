@@ -6,6 +6,10 @@ use CodeGenerator\Exception\Exception;
 
 class ParameterBlock extends Block {
 
+    const UNQUOTABLE_TYPES = [
+        'null', 'array', 'callable', 'string', 'int', 'bool', 'mixed', 'void', 'float', 'iterable', 'object', 'never', 'self', 'parent', 'static'
+    ];
+
     /** @var string */
     private $_name;
 
@@ -101,7 +105,7 @@ class ParameterBlock extends Block {
      */
     public function getType() {
         $type = $this->_type;
-        if (!in_array($type, [null, 'array', 'callable'], true)) {
+        if (!in_array($type, self::UNQUOTABLE_TYPES, true)) {
             $type = self::_normalizeClassName($type);
         }
         return $type;
