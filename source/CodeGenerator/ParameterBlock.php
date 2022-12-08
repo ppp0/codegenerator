@@ -7,7 +7,7 @@ use CodeGenerator\Exception\Exception;
 class ParameterBlock extends Block {
 
     const UNQUOTABLE_TYPES = [
-        'null', 'array', 'callable', 'string', 'int', 'bool', 'mixed', 'void', 'float', 'iterable', 'object', 'never', 'self', 'parent', 'static'
+        'null', 'array', 'callable', 'string', 'int', 'bool', 'mixed', 'void', 'float', 'iterable', 'object', 'never', 'self', 'parent', 'static',
     ];
 
     /** @var string */
@@ -15,6 +15,8 @@ class ParameterBlock extends Block {
 
     /** @var string|null */
     private $_type;
+
+    private bool $_isNullableType;
 
     /** @var mixed */
     private $_defaultValue;
@@ -55,6 +57,7 @@ class ParameterBlock extends Block {
         }
         $this->_passedByReference = (bool) $passedByReference;
         $this->_variadic = (bool) $variadic;
+        $this->_isNullableType = $this->_optional && null === $this->_defaultValue;
     }
 
     /**
@@ -108,6 +111,7 @@ class ParameterBlock extends Block {
         if (!in_array($type, self::UNQUOTABLE_TYPES, true)) {
             $type = self::_normalizeClassName($type);
         }
+        $type = ($this->_isNullableType) ? '?' . $type : $type;
         return $type;
     }
 
@@ -116,7 +120,7 @@ class ParameterBlock extends Block {
      * @return ParameterBlock
      */
     public static function buildFromReflection(\ReflectionParameter $reflection) {
-        $type = !is_null($reflection->getType()) ? $reflection->getType()->getName(): null;
+        $type = !is_null($reflection->getType()) ? $reflection->getType()->getName() : null;
         $defaultValue = null;
         if ($reflection->isDefaultValueAvailable()) {
             $defaultValue = $reflection->getDefaultValue();
